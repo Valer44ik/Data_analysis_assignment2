@@ -15,7 +15,11 @@ All six differ significantly between emotions (ANOVA, \texttt{results/task4\_fea
 \textbf{Model.} For each emotion a first-order Takagi--Sugeno model is identified with
 pyFUME~\cite{fuchs2020pyfume}: fuzzy c-means clustering defines the rules (one per cluster, Gaussian
 membership functions), and the linear consequents are fitted by weighted least squares on the
-one-vs-rest target. The emotion with the highest output wins. The number of rules (\todo{k}) and
+one-vs-rest target. Each one-vs-rest training set is balanced (the 112 images of the emotion plus
+112 random others): pyFUME clusters in the joint input--output space, and with a 1:6 imbalance all
+clusters described the "rest" class, giving seven nearly identical rule bases (macro-F1 0.17--0.24).
+Rule simplification (Setnes) is disabled so that every rule keeps a fuzzy set for each of the six
+variables. The emotion with the highest output wins. The number of rules (\todo{k}) and
 the consequent order were selected with subject-wise 5-fold CV. We verified that the membership
 functions did not degenerate into "universal" sets (median width $\sigma=\todo{}$ on a $[0,1]$
 scale), a failure mode in which the model reduces to a linear regression.

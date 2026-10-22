@@ -12,7 +12,10 @@ in-text numbers marked `\todo{}` must be copied from the notebook's auto-generat
 \textbf{Features.} (i) \emph{HOG}: 9 orientations, $8\times8$-pixel cells, $2\times2$-cell blocks
 with L2-Hys normalisation (900 dimensions); (ii) \emph{landmarks}: the 68 dlib points predicted on
 the upscaled ($96\times96$) face, centred on their mean and scaled per axis as in the provided
-baseline (136 dimensions); (iii) \emph{PCA}: raw pixels projected on the first eigenfaces
+baseline (136 dimensions). FER images are tight crops, so the whole image is the face box; for
+crops made with a margin $m$ (KDEF, webcam) the predictor receives the inner box, the central
+$1/(1+2m)$ of the crop --- giving it the whole KDEF crop misplaced the points (KDEF geometric
+features: 0.28 vs 0.67 macro-F1 with a logistic regression); (iii) \emph{PCA}: raw pixels projected on the first eigenfaces
 (whitened; 60 or 120 components chosen on validation); (iv) \emph{HOG+LM}: concatenation.
 \textbf{Classifiers.} Logistic regression (LR), SVM with RBF kernel, random forest (RF, 300 trees),
 each preceded by standardisation. \textbf{Protocol.} Hyper-parameters (regularisation $C$, class

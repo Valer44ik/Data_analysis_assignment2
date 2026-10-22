@@ -66,8 +66,9 @@ def crop_face(gray, box, margin):
     return cv2.resize(gray[y1:y2, x1:x2], (F.IMG_SIZE, F.IMG_SIZE), interpolation=cv2.INTER_AREA)
 
 
-def predict_face(bundle, face48):
-    X = F.extract_feature_set(face48[None], bundle["spec"], n_jobs=1)
+def predict_face(bundle, face48, margin):
+    # the landmark detector must know where the face is inside the crop (see extract_landmarks)
+    X = F.extract_feature_set(face48[None], {**bundle["spec"], "crop_margin": margin}, n_jobs=1)
     return class_scores(bundle["model"], X)
 
 
@@ -97,7 +98,7 @@ def run_image(bundle, path, margin):
     if not faces:  # e.g. an already cropped face: use the whole image
         faces = [(0, 0, gray.shape[1], gray.shape[0])]
     for box in faces:
-        probs = predict_face(bundle, crop_face(gray, box, margin))
+        probs = predict_face(bundle, crop_face(gray, box, margin), margin)
         print(f"face {box}: " + ", ".join(f"{l} {p:.2f}" for l, p in zip(bundle["labels"], probs)))
         draw(img, box, probs, bundle["labels"])
     out = ROOT / "demo_output.jpg"
@@ -121,7 +122,7 @@ def run_camera(bundle, camera, margin, smooth):
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         faces = detect_faces(gray)
         for i, box in enumerate(faces[:3]):
-            probs = predict_face(bundle, crop_face(gray, box, margin))
+            probs = predict_face(bundle, crop_face(gray, box, margin), margin)
             if i == 0:  # temporal smoothing (moving average of the scores) for the main face
                 history.append(probs)
                 if smoothing:
@@ -154,12 +155,12 @@ def main():
     ap.add_argument("--model", help="model bundle (.pkl); default: models/final.pkl, else best Task 1 model")
     ap.add_argument("--camera", type=int, default=0, help="camera index (default 0)")
     ap.add_argument("--margin", type=float, default=None,
-                    help="crop margin around the Haar box (default: stored in the model, else 0.1)")
+                    help="crop margin around the Haar box (default 0.1)")
     ap.add_argument("--smooth", type=int, default=10, help="frames in the moving average (1 = off)")
     ap.add_argument("--image", help="run on a still image instead of the camera")
     args = ap.parse_args()
     bundle = load_bundle(args.model)
-    margin = args.margin if args.margin is not None else bundle.get("crop_margin", 0.1)
+    margin = args.margin if args.margin is not None else 0.1
     if args.image:
         run_image(bundle, args.image, margin)
     else:

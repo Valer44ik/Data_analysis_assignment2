@@ -306,10 +306,19 @@ def extract_hog(imgs, orientations=9, pixels_per_cell=(8, 8), cells_per_block=(2
 # ----------------------------------------------------------------------------------------
 # Landmarks (dlib 68 points)
 # ----------------------------------------------------------------------------------------
-def _landmarks_chunk(chunk, upscale):
+def face_rect_in_crop(upscale, margin):
+    """dlib rectangle of the detected face inside a crop made with `margin` (see
+    preprocess_kdef_image): the face box is the central 1/(1+2*margin) part of the crop."""
     import dlib
+    inset = int(round(upscale * margin / (1 + 2 * margin)))
+    if inset == 0:  # tight crop (FER): whole image, as in the kit's baseline
+        return dlib.rectangle(1, 1, upscale - 1, upscale - 1)
+    return dlib.rectangle(inset, inset, upscale - 1 - inset, upscale - 1 - inset)
+
+
+def _landmarks_chunk(chunk, upscale, margin):
     pred = _predictor()
-    rect = dlib.rectangle(1, 1, upscale - 1, upscale - 1)
+    rect = face_rect_in_crop(upscale, margin)
     out = np.empty((len(chunk), N_LANDMARKS, 2), np.float32)
     for i, im in enumerate(chunk):
         if im.ndim == 3:
@@ -320,15 +329,17 @@ def _landmarks_chunk(chunk, upscale):
     return out
 
 
-def extract_landmarks(imgs, upscale=96, n_jobs=-1, chunk=2000):
+def extract_landmarks(imgs, upscale=96, margin=0.0, n_jobs=-1, chunk=2000):
     """dlib 68 landmarks for 48x48 face crops -> (N, 68, 2) in relative [0, 1] coordinates.
 
-    FER images are already face crops, so (as in the kit's baseline) the whole image is
-    given to the shape predictor as the face rectangle; the image is upscaled first
-    because the predictor works better on >48 px faces.
+    The shape predictor needs the face rectangle. FER images are tight face crops, so (as in
+    the kit's baseline) the whole image is used (margin=0). KDEF/webcam crops were expanded by
+    `margin` around the Haar box, so the predictor gets that inner box instead; using the
+    whole image there misplaces the landmarks (on KDEF: geometric-feature macro-F1 0.28 vs
+    0.67). Images are upscaled first because the predictor works better on >48 px faces.
     """
     chunks = [imgs[i:i + chunk] for i in range(0, len(imgs), chunk)]
-    out = Parallel(n_jobs=n_jobs)(delayed(_landmarks_chunk)(c, upscale) for c in chunks)
+    out = Parallel(n_jobs=n_jobs)(delayed(_landmarks_chunk)(c, upscale, margin) for c in chunks)
     return np.concatenate(out)
 
 
@@ -474,13 +485,14 @@ def extract_feature_set(imgs, spec, pts=None, n_jobs=-1):
       hog      : dict(orientations, pixels_per_cell, cells_per_block) (optional)
       geo_idx  : indices into GEO_NAMES to keep (optional, default all)
       proto    : dict(mean_shape, prototypes) for the 'proto' block
-    `pts` can be passed to reuse precomputed landmarks of the *gray* images.
+      crop_margin : margin of the face crop (0 for FER images), tells dlib where the face is
+    `pts` can be passed to reuse precomputed landmarks.
     """
     imgs = apply_variant(imgs, spec.get("variant", "gray"))
     blocks = spec["blocks"]
     need_pts = any(b in blocks for b in ("lm", "geo", "proto"))
     if need_pts and pts is None:
-        pts = extract_landmarks(imgs, n_jobs=n_jobs)
+        pts = extract_landmarks(imgs, margin=spec.get("crop_margin", 0.0), n_jobs=n_jobs)
     parts = []
     for b in blocks:
         if b == "hog":
