@@ -1,4 +1,4 @@
-"""Real-time emotion recognition demo — Group 2, Assignment 2 (Task 6).
+"""Real-time emotion recognition demo - Group 2, Assignment 2 (Task 6).
 
 Opens the webcam, detects faces with OpenCV's Haar cascade, converts every face to the FER2013
 format (crop with margin -> gray -> 48x48), extracts exactly the features the model was trained

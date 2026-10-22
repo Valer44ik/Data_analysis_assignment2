@@ -91,6 +91,26 @@ conda run -n ass2-fuzzy python -m ipykernel install --user --name ass2-fuzzy --d
 **The kernel names must be exactly `ass2` and `ass2-fuzzy`**, because the notebooks are saved
 with these kernels.
 
+### GPU (CUDA) for the SVMs — main environment only
+
+The RBF-SVMs compute their kernel matrix with PyTorch, on the GPU when CUDA is available
+(`src/gpu_svm.py`: same model and identical predictions as scikit-learn's SVC, much faster).
+Install the **CUDA build** of PyTorch into the main environment:
+
+```powershell
+# venv:  ..\.venv\Scripts\python -m pip install ...      conda:  conda run -n ass2 pip install ...
+..\.venv\Scripts\python -m pip install torch --index-url https://download.pytorch.org/whl/cu126
+..\.venv\Scripts\python -c "import torch; print(torch.__version__, 'CUDA:', torch.cuda.is_available(), torch.cuda.get_device_name(0) if torch.cuda.is_available() else '')"
+```
+
+It must print `CUDA: True` and your GPU name. If it prints `False`, run `nvidia-smi`. Then install
+the build for your driver from the selector at https://pytorch.org/get-started/locally/
+(pip, Windows, CUDA 12.x). Each notebook prints `kernel computations on: cuda` at the start.
+Without a GPU everything still works (on CPU), just slower.
+
+RAM: an SVM on 30k images keeps a 30k × 30k kernel matrix (7.2 GB) in memory. With less than 16 GB
+of RAM, set `$env:MAX_KERNEL_N = "15000"` before running.
+
 Check the environments:
 
 ```powershell
@@ -116,11 +136,11 @@ matters**.
 | 1 | `z_load_split_fer2013.ipynb` | ass2 | FER CSV → `data/fer2013_{train,validation,test}.csv` | 1 min |
 | 2 | `z_load_kdef_student.ipynb` | ass2 | KDEF → `data/kdef_preprocessed.pkl` | 1 min |
 | 3 | `00_data_preparation.ipynb` | ass2 | image arrays, landmarks, KDEF variants, data exploration | 10–15 min |
-| 4 | `01_fer_baseline.ipynb` | ass2 | **Task 1** | **long** (SVM grids, 1–3 h) |
+| 4 | `01_fer_baseline.ipynb` | ass2 | **Task 1** | longest (SVM grids; roughly 30–60 min with the GPU) |
 | 5 | `02_kdef_study.ipynb` | ass2 | **Task 2** | 10–20 min |
 | 6 | `03_cross_dataset.ipynb` | ass2 | **Task 3** | 30–60 min |
 | 7 | `04_fuzzy_kdef.ipynb` | **ass2-fuzzy** | **Task 4** | 5–15 min |
-| 8 | `05_creative_challenge.ipynb` | ass2 | **Task 5** → `models/final.pkl` | **long** (1–3 h) |
+| 8 | `05_creative_challenge.ipynb` | ass2 | **Task 5** → `models/final.pkl` | longest (roughly 30–60 min with the GPU) |
 
 Command line (with the main environment activated: `..\.venv\Scripts\activate` or `conda activate ass2`):
 
@@ -149,9 +169,9 @@ from 01 on without SMOKE afterwards (00 and the kit notebooks do not depend on S
 
 ## 5. Notes
 
-* scikit-learn and dlib run on the **CPU**, so the CUDA GPU does not speed anything up. All
-  searches use every core (`n_jobs=-1`). Keep the laptop plugged in and disable sleep for the
-  long notebooks (01 and 05).
+* The SVM kernels run on the **GPU** (CUDA). Everything else (HOG, dlib landmarks, LR, RF)
+  runs on the CPU with every core (`n_jobs=-1`). Keep the laptop plugged in and disable sleep for
+  notebooks 01 and 05.
 * Features are cached in `data/cache/`. If a notebook crashes halfway, just re-run it: the cached
   features are reused.
 * Messages like `KeyError: '...joblib_memmapping_folder...'` in the console come from joblib on

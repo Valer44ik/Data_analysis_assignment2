@@ -18,7 +18,10 @@ $1/(1+2m)$ of the crop --- giving it the whole KDEF crop misplaced the points (K
 features: 0.28 vs 0.67 macro-F1 with a logistic regression); (iii) \emph{PCA}: raw pixels projected on the first eigenfaces
 (whitened; 60 or 120 components chosen on validation); (iv) \emph{HOG+LM}: concatenation.
 \textbf{Classifiers.} Logistic regression (LR), SVM with RBF kernel, random forest (RF, 300 trees),
-each preceded by standardisation. \textbf{Protocol.} Hyper-parameters (regularisation $C$, class
+each preceded by standardisation. To make the SVM affordable on 28k images, its kernel matrix is
+computed with PyTorch on the GPU and passed to the same libsvm solver
+(\texttt{SVC(kernel="precomputed")}); predictions are identical to \texttt{SVC(kernel="rbf")} while
+training is $\sim$30$\times$ faster (\texttt{src/gpu\_svm.py}). \textbf{Protocol.} Hyper-parameters (regularisation $C$, class
 weighting, tree depth/leaf size, PCA size) are chosen by grid search with a predefined split ---
 fit on (a stratified 10k subset of) Training, macro-F1 on PublicTest --- then the model is refitted
 on the full Training set. PrivateTest is used only for the numbers reported here. We optimise

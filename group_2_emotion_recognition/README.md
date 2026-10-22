@@ -15,7 +15,8 @@ Course 5ARE0, Assignment 2 (2026). Gabriele Salvo, Valērijs Gončarovs, Herman 
 | `03_cross_dataset.ipynb` | **Task 3** — FER→KDEF and KDEF→FER, feature transfer, domain-shift measurement and adaptation |
 | `04_fuzzy_kdef.ipynb` | **Task 4** — pyFUME Takagi–Sugeno fuzzy classifier on 6 geometric features (**fuzzy environment**) |
 | `05_creative_challenge.ipynb` | **Task 5** — tuning, balancing, augmentation, KDEF geometric features & prototypes, label curation, FER+KDEF merge |
-| `src/features.py` | the only helper module: preprocessing and feature extraction (allowed by the assignment) |
+| `src/features.py` | preprocessing and feature extraction (the assignment allows feature extraction outside notebooks) |
+| `src/gpu_svm.py` | `GPUKernelSVC`: RBF-SVM whose kernel matrix is computed with PyTorch on the GPU (CUDA); same libsvm solver and identical predictions as `SVC`, ~30x faster. In `src/` only so the pickled models load in the demo |
 | `src/preprocess.py`, `src/utils_display.py` | unchanged kit helpers used by the kit notebooks |
 | `models/*.pkl` | fitted models; each `.pkl` is a dict `{model, spec, labels, ...}` where `spec` describes the features |
 | `results/*.csv`, `results/*.tex` | every metric of every experiment (the report tables are generated from these) |
@@ -32,6 +33,7 @@ Two environments are needed because pyFUME requires `numpy==1.24.4`
 # main environment (all notebooks except 04, and the demo)
 uv venv --python 3.11 .venv
 uv pip install --python .venv -r requirements.txt
+uv pip install --python .venv torch --index-url https://download.pytorch.org/whl/cu126   # CUDA build (GPU SVM)
 .venv/Scripts/python -m ipykernel install --user --name ass2 --display-name "Python (ass2)"
 
 # fuzzy environment (notebook 04 only)
@@ -67,8 +69,8 @@ Command-line execution: `jupyter nbconvert --to notebook --execute --inplace 01_
 subsets with reduced grids (minutes instead of hours). The delivered results are the full run
 (`SMOKE` unset).
 
-**Run time (full):** scikit-learn and dlib run on the CPU (a GPU does not help); all searches use
-all cores (`n_jobs=-1`). The SVM grid searches in notebooks 01 and 05 dominate (hours, not minutes).
+**Run time (full):** the SVM kernel matrices are computed on the GPU (CUDA, via PyTorch; CPU
+fallback without a GPU); HOG, dlib, LR and RF use all CPU cores. Notebooks 01 and 05 are the longest.
 
 ## Protocol summary
 
