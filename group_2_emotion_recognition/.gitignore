@@ -1,0 +1,5 @@
+# datasets and feature caches stay local (see README "Data")
+data/
+__pycache__/
+.ipynb_checkpoints/
+demo_output.jpg
