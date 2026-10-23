@@ -8,7 +8,7 @@ rounding of the distances); only the expensive part runs on CUDA.
 
 * Works without a GPU (PyTorch on CPU) and without PyTorch (NumPy fallback), so the saved models
   can be used by demo_emotion.py on any machine.
-* The Gram matrix needs n^2 * 8 bytes of RAM (30k samples -> 7.2 GB). Above `max_kernel_n`
+* The Gram matrix needs n^2 * 8 bytes of RAM (33k samples -> 8.7 GB). Above `max_kernel_n`
   samples the estimator falls back to the classic SVC(kernel="rbf").
 
 This class lives in src/ (not in a notebook) only so that pickled models can be loaded by the demo.
@@ -19,7 +19,7 @@ import numpy as np
 from sklearn.base import BaseEstimator, ClassifierMixin
 from sklearn.svm import SVC
 
-MAX_KERNEL_N = int(os.environ.get("MAX_KERNEL_N", 30000))
+MAX_KERNEL_N = int(os.environ.get("MAX_KERNEL_N", 33000))
 
 
 def _torch():
@@ -62,12 +62,16 @@ def rbf_kernel(A, B, gamma, block=2048):
 
 
 class GPUKernelSVC(ClassifierMixin, BaseEstimator):
-    """Drop-in replacement for SVC(kernel="rbf") with the kernel computed on the GPU."""
+    """Drop-in replacement for SVC(kernel="rbf") with the kernel computed on the GPU.
 
-    def __init__(self, C=1.0, gamma="scale", class_weight=None, max_kernel_n=MAX_KERNEL_N,
+    gamma_mult multiplies gamma (useful to tune gamma relative to the data-dependent "scale" value).
+    """
+
+    def __init__(self, C=1.0, gamma="scale", gamma_mult=1.0, class_weight=None, max_kernel_n=MAX_KERNEL_N,
                  cache_size=2000, random_state=None):
         self.C = C
         self.gamma = gamma
+        self.gamma_mult = gamma_mult
         self.class_weight = class_weight
         self.max_kernel_n = max_kernel_n
         self.cache_size = cache_size
@@ -76,7 +80,8 @@ class GPUKernelSVC(ClassifierMixin, BaseEstimator):
     def fit(self, X, y, sample_weight=None):
         X = np.asarray(X, np.float32)
         # same definition as scikit-learn's gamma="scale"
-        self.gamma_ = 1.0 / (X.shape[1] * X.var()) if self.gamma == "scale" else float(self.gamma)
+        base = 1.0 / (X.shape[1] * X.var()) if self.gamma == "scale" else float(self.gamma)
+        self.gamma_ = base * self.gamma_mult
         self.precomputed_ = len(X) <= self.max_kernel_n
         if self.precomputed_:
             K = rbf_kernel(X, X, self.gamma_)

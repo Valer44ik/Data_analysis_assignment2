@@ -108,8 +108,13 @@ the build for your driver from the selector at https://pytorch.org/get-started/l
 (pip, Windows, CUDA 12.x). Each notebook prints `kernel computations on: cuda` at the start.
 Without a GPU everything still works (on CPU), just slower.
 
-RAM: an SVM on 30k images keeps a 30k × 30k kernel matrix (7.2 GB) in memory. With less than 16 GB
-of RAM, set `$env:MAX_KERNEL_N = "15000"` before running.
+RAM: an SVM on 33k images keeps a 33k × 33k kernel matrix (8.7 GB) in memory, so 16 GB of RAM or
+more is needed. With less RAM, set `$env:MAX_KERNEL_N = "15000"` before running (slower, slightly worse).
+
+**Check before the long run:** the first cells of notebooks 01, 02, 03 and 05 must print
+`kernel computations on: cuda`. In the previous run notebook 01 printed nothing of the kind and
+its SVM grids took 22 min each on the CPU. If you see `cpu`, the CUDA build of PyTorch is not
+installed in the kernel's environment: fix that first.
 
 Check the environments:
 
@@ -195,19 +200,29 @@ lighting problems, which margin/smoothing worked best. This goes into
 
 ---
 
-## 7. Commit the results back
+## 7. Commit the results back (models with Git LFS)
+
+The trained models are larger than GitHub's 100 MB file limit (e.g. `final.pkl` ≈ 125 MB), so
+they are stored with **Git LFS**. The repository already has a `.gitattributes` that sends every
+`group_2_emotion_recognition/models/*.pkl` to LFS; Git for Windows includes `git lfs`.
 
 ```powershell
-# check model sizes: GitHub rejects files > 100 MB
-Get-ChildItem models | Select-Object Name, @{n="MB";e={[math]::Round($_.Length/1MB,1)}}
+git lfs install                     # once per machine
+git pull                            # make sure you have the latest code and .gitattributes
 
+cd group_2_emotion_recognition
 git add *.ipynb results figures models
-git commit -m "Full run: results, figures and trained models"
+git commit -m "Full run 2: results, figures and trained models"
 git push origin final
+
+git lfs ls-files                    # every models/*.pkl must be listed here
 ```
 
-If a `.pkl` is larger than 95 MB, do **not** add it (`git reset models/<name>.pkl`). Upload it
-to the shared drive instead and tell Gabriele.
+The push uploads the models to LFS first (a few hundred MB: be patient). If it fails with
+`HTTP 408` or a timeout, run `git config http.postBuffer 524288000` and push again.
+
+Whoever clones or pulls afterwards runs `git lfs install` once; `git pull` then downloads the
+real model files instead of small pointer files.
 
 **Never commit:** `data/`, `.venv*`, `__pycache__`.
 

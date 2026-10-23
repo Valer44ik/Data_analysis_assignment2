@@ -35,10 +35,26 @@ def load_bundle(path=None):
         p = ROOT / c
         if p.exists():
             bundle = joblib.load(p)
-            print(f"loaded {c}: {type(bundle['model']).__name__}, features {bundle['spec'].get('blocks')}, "
-                  f"variant {bundle['spec'].get('variant', 'gray')}")
+            if "members" in bundle:   # ensemble saved by notebook 05
+                desc = " + ".join(f"{m['name']} {m['spec']['blocks']} x{m['weight']:g}" for m in bundle["members"])
+                print(f"loaded {c}: ensemble [{desc}], mirrored view: {bundle.get('tta', False)}")
+            else:
+                print(f"loaded {c}: {type(bundle['model']).__name__}, features {bundle['spec'].get('blocks')}, "
+                      f"variant {bundle['spec'].get('variant', 'gray')}")
             return bundle
     sys.exit(f"No model found (tried {candidates}). Run the notebooks first.")
+
+
+def softmax(d):
+    e = np.exp(d - d.max())
+    return e / e.sum()
+
+
+def raw_scores(model, X):
+    """Decision values (SVM/LR) or probabilities (RF) for one sample, as in notebook 05."""
+    if hasattr(model, "decision_function"):
+        return np.atleast_2d(model.decision_function(X))[0]
+    return model.predict_proba(X)[0]
 
 
 def class_scores(model, X):
@@ -66,10 +82,21 @@ def crop_face(gray, box, margin):
     return cv2.resize(gray[y1:y2, x1:x2], (F.IMG_SIZE, F.IMG_SIZE), interpolation=cv2.INTER_AREA)
 
 
-def predict_face(bundle, face48, margin):
+def features_of(face48, spec, margin):
     # the landmark detector must know where the face is inside the crop (see extract_landmarks)
-    X = F.extract_feature_set(face48[None], {**bundle["spec"], "crop_margin": margin}, n_jobs=1)
-    return class_scores(bundle["model"], X)
+    return F.extract_feature_set(face48[None], {**spec, "crop_margin": margin}, n_jobs=1)
+
+
+def predict_face(bundle, face48, margin):
+    if "members" not in bundle:
+        return class_scores(bundle["model"], features_of(face48, bundle["spec"], margin))
+    # ensemble: weighted sum of z-normalised member scores (+ mirrored face if the model used it)
+    views = [face48, face48[:, ::-1].copy()] if bundle.get("tta") else [face48]
+    total = 0.0
+    for m in bundle["members"]:
+        s = np.mean([raw_scores(m["model"], features_of(v, m["spec"], margin)) for v in views], axis=0)
+        total = total + m["weight"] * (s - m["mean"]) / m["std"]
+    return softmax(total)
 
 
 def detect_faces(gray):

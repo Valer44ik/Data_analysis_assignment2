@@ -25,6 +25,11 @@ and balanced training strategies,'' arXiv:2604.20307, 2026.
 adaptation,'' in \emph{AAAI}, 2016.
 \bibitem{fuchs2020pyfume} C.~Fuchs, S.~Spolaor, M.~S. Nobile, U.~Kaymak, ``pyFUME: a Python package
 for fuzzy model estimation,'' in \emph{FUZZ-IEEE}, 2020.
+\bibitem{saerens2002} M.~Saerens, P.~Latinne, C.~Decaestecker, ``Adjusting the outputs of a
+classifier to new a priori probabilities: a simple procedure,'' \emph{Neural Computation},
+14(1):21--41, 2002.
+\bibitem{shan2009} C.~Shan, S.~Gong, P.~W. McOwan, ``Facial expression recognition based on local
+binary patterns: a comprehensive study,'' \emph{Image and Vision Computing}, 27(6):803--816, 2009.
 \bibitem{dalal2005} N.~Dalal, B.~Triggs, ``Histograms of oriented gradients for human detection,''
 in \emph{CVPR}, 2005.
 \bibitem{kazemi2014} V.~Kazemi, J.~Sullivan, ``One millisecond face alignment with an ensemble of

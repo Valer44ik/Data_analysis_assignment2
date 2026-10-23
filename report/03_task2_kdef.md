@@ -39,6 +39,11 @@ model is less prone to overfit than an RBF-SVM; landmarks gain the most because 
 clean frontal faces, while PCA improves because pixel variance in KDEF is mostly expression and
 identity rather than illumination.}
 
+\textbf{Improving the KDEF model.} With a 20\,\% margin the face covers only $\sim$34 of the
+48 pixels, so we also tested finer HOG cells (6 and 4\,px) and the fusion HOG+LM+GEO under the same
+GroupKFold protocol (\texttt{results/task2\_improve.csv}): \todo{best variant and its CV/test
+macro-F1}.
+
 \textbf{Gray vs RGB.} Colour adds \todo{} macro-F1 for HOG and \todo{} for PCA
 (\texttt{results/task2\_color\_macro\_f1.csv}): expressions are encoded by shape and shading, and
 colour mainly reflects skin and lighting --- and a colour model could not be applied to

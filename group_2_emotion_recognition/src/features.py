@@ -304,6 +304,42 @@ def extract_hog(imgs, orientations=9, pixels_per_cell=(8, 8), cells_per_block=(2
 
 
 # ----------------------------------------------------------------------------------------
+# LBP texture histograms
+# ----------------------------------------------------------------------------------------
+def _lbp_chunk(chunk, P, R, grid):
+    from skimage.feature import local_binary_pattern
+    n_bins = P + 2                      # 'uniform' LBP codes: 0..P+1
+    out = np.empty((len(chunk), grid * grid * n_bins), np.float32)
+    for i, im in enumerate(chunk):
+        if im.ndim == 3:
+            im = cv2.cvtColor(im, cv2.COLOR_RGB2GRAY)
+        codes = local_binary_pattern(im, P, R, method="uniform")
+        cells = []
+        for rows in np.array_split(codes, grid, axis=0):
+            for cell in np.array_split(rows, grid, axis=1):
+                h = np.bincount(cell.astype(int).ravel(), minlength=n_bins)[:n_bins]
+                cells.append(h / max(h.sum(), 1))
+        out[i] = np.concatenate(cells)
+    return out
+
+
+def extract_lbp(imgs, P=8, R=1, grid=6, n_jobs=-1, chunk=2000):
+    """Uniform LBP (Ojala et al. 2002) histograms on a grid x grid layout of cells.
+
+    Classic texture descriptor for facial expressions (Shan et al. 2009): it captures wrinkles,
+    furrows and teeth that geometry misses. 48x48 face, 6x6 cells of 8x8 px, 10 bins -> 360 dims.
+    """
+    chunks = [imgs[i:i + chunk] for i in range(0, len(imgs), chunk)]
+    out = Parallel(n_jobs=n_jobs)(delayed(_lbp_chunk)(c, P, R, grid) for c in chunks)
+    return np.concatenate(out)
+
+
+def flip_images(imgs):
+    """Horizontal mirror of a stack of images (test-time augmentation)."""
+    return imgs[:, :, ::-1].copy()
+
+
+# ----------------------------------------------------------------------------------------
 # Landmarks (dlib 68 points)
 # ----------------------------------------------------------------------------------------
 def face_rect_in_crop(upscale, margin):
@@ -481,7 +517,7 @@ def extract_feature_set(imgs, spec, pts=None, n_jobs=-1):
     spec keys:
       variant  : image variant applied first ('gray', 'clahe', 'otsu', 'adaptive', 'edges')
       blocks   : list of blocks to concatenate, from
-                 'hog' | 'lm' | 'pix' | 'geo' | 'proto'
+                 'hog' | 'lm' | 'pix' | 'lbp' | 'geo' | 'proto'
       hog      : dict(orientations, pixels_per_cell, cells_per_block) (optional)
       geo_idx  : indices into GEO_NAMES to keep (optional, default all)
       proto    : dict(mean_shape, prototypes) for the 'proto' block
@@ -501,6 +537,8 @@ def extract_feature_set(imgs, spec, pts=None, n_jobs=-1):
             parts.append(landmark_vector(pts))
         elif b == "pix":
             parts.append(imgs.reshape(len(imgs), -1).astype(np.float32) / 255.0)
+        elif b == "lbp":
+            parts.append(extract_lbp(imgs, n_jobs=n_jobs))
         elif b == "geo":
             g = geometric_features(pts)
             parts.append(g[:, spec["geo_idx"]] if spec.get("geo_idx") is not None else g)

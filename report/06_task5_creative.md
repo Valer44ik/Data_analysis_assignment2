@@ -10,8 +10,9 @@ prototypes and dataset merging). Source: `05_creative_challenge.ipynb`.
 \textbf{Approach.} Starting from the best Task~1 configuration (\todo{model + features}), groups of
 improvements are tested in sequence. Within a group the options are compared on PublicTest and the
 best is adopted only if it improves validation macro-F1 (greedy forward selection); PrivateTest is
-only reported. Ablations use a stratified subset of 12{,}000 training images; the final
-configuration is retrained on the full training set.
+only reported. Every option is trained on the \emph{full} training set: in a first run, ablations
+on a 12k subset under-estimated the full-data score by 8 points and hid real gains in noise.
+The GPU kernel computation (Task~1) makes one full-data SVM fit take about a minute.
 
 \textbf{Strategies.}
 \begin{itemize}\itemsep0pt
@@ -35,8 +36,15 @@ configuration is retrained on the full training set.
 \item \emph{Dataset merging} (following~\cite{kirbiz2026}): the 56 KDEF training subjects, clean
   or degraded to FER-like quality, are added to the FER training set with inverse-frequency class
   weights.
-\item \emph{Feature selection} (SelectKBest/ANOVA vs PCA 95\,\%) and a final finer
-  \emph{hyper-parameter search}.
+\item \emph{Texture}: uniform LBP histograms~\cite{shan2009} on a $6\times6$ grid (360 dims),
+  capturing wrinkles, furrows and teeth that HOG cells and geometry only partly see.
+\item \emph{Feature selection} (SelectKBest/ANOVA vs PCA 95\,\%) and a finer
+  \emph{hyper-parameter search} of $C$ and the kernel width.
+\item \emph{Test-time augmentation}: the class scores of a face and of its mirror image are averaged.
+\item \emph{Score-level ensemble}: SVMs on complementary representations (selected configuration,
+  LBP+landmarks, eigenfaces), z-normalised decision scores averaged with weights chosen on PublicTest.
+\item \emph{More data}: after all choices are frozen, the selected model is refitted on Training +
+  PublicTest; both the Training-only and the refitted model are reported on PrivateTest.
 \end{itemize}
 
 \begin{table}[h]\centering\small

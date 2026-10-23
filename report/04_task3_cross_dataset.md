@@ -64,8 +64,14 @@ sensitive to framing and blur.
 (i) cropping --- the KDEF margin that best matches FER's landmark geometry (chosen without labels:
 \todo{m}) and eye-line alignment of both datasets; (ii) resolution/quality --- KDEF degraded with
 blur, noise, contrast jitter and JPEG artefacts; (iii) intensity --- per-image z-scoring plus CLAHE;
-and feature-space alignment with per-domain standardisation and CORAL~\cite{sun2016coral}, both
-using only unlabelled target training images. \todo{Summarise which helped and how much; the
+feature-space alignment with per-domain standardisation and CORAL~\cite{sun2016coral}; and
+(iv) \emph{prior shift}: the target class priors are estimated without labels with the EM algorithm
+of Saerens et al.~\cite{saerens2002} on the source model's posteriors for unlabelled target images,
+and the posteriors are re-weighted accordingly (\texttt{results/task3\_em\_priors.csv} compares the
+estimated and true priors). All steps use only unlabelled target \emph{training} images. The crop
+margin is chosen without labels as the one whose mean landmark configuration is closest to FER's;
+since FER crops are tighter than the Haar box we also tried negative margins (cropping inside the
+box): \todo{chosen margin}. \todo{Summarise which helped and how much; the
 combined row.}
 
 \begin{table}[h]\centering\small

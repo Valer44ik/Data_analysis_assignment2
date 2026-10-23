@@ -21,10 +21,11 @@ features: 0.28 vs 0.67 macro-F1 with a logistic regression); (iii) \emph{PCA}: r
 each preceded by standardisation. To make the SVM affordable on 28k images, its kernel matrix is
 computed with PyTorch on the GPU and passed to the same libsvm solver
 (\texttt{SVC(kernel="precomputed")}); predictions are identical to \texttt{SVC(kernel="rbf")} while
-training is $\sim$30$\times$ faster (\texttt{src/gpu\_svm.py}). \textbf{Protocol.} Hyper-parameters (regularisation $C$, class
-weighting, tree depth/leaf size, PCA size) are chosen by grid search with a predefined split ---
-fit on (a stratified 10k subset of) Training, macro-F1 on PublicTest --- then the model is refitted
-on the full Training set. PrivateTest is used only for the numbers reported here. We optimise
+training is $\sim$30$\times$ faster (\texttt{src/gpu\_svm.py}). \textbf{Protocol.} Hyper-parameters (LR: $C\in[10^{-3},1]$; SVM: $C\in\{1,3,10,30\}$ and kernel
+width $\gamma\in\{0.5,1,2\}\times$ the data-dependent default; RF: depth and leaf size; PCA size;
+class weighting) are chosen by grid search with a predefined split --- fit on a stratified 15k
+subset of Training, macro-F1 on PublicTest --- then the model is refitted on the full Training set.
+The grids were widened until no selected value lay on a grid border. PrivateTest is used only for the numbers reported here. We optimise
 macro-F1 rather than accuracy because a classifier that ignores Disgust loses only 1.5\,\% accuracy.
 The provided RF+landmarks baseline reaches \todo{acc} accuracy / \todo{F1} macro-F1 on PrivateTest
 in our pipeline (kit: 0.44 / 0.38 on validation).
