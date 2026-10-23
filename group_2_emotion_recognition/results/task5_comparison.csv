@@ -1,0 +1,5 @@
+model,acc,bal_acc,macro_f1
+Kit baseline (RF + landmarks),0.4653,0.396,0.4016
+Task 1 best (SVM + HOG+LM),0.5904,0.5632,0.5844
+"Last year's group 42 (SVM, landmark-filtered test set)",0.5516,0.4967,0.5344
+Creative final model,0.5954,0.5717,0.5917

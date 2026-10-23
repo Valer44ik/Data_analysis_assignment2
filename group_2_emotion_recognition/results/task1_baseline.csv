@@ -1,0 +1,3 @@
+model,feature,split,acc,bal_acc,macro_f1,n
+RF (kit),LM,val,0.4408,0.3677,0.3723,3589
+RF (kit),LM,test,0.4653,0.396,0.4016,3589

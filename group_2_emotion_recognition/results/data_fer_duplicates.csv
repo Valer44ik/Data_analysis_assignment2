@@ -1,0 +1,7 @@
+,count
+within train,1347
+within val,26
+within test,20
+test images also in train,308
+val images also in train,299
+train duplicate groups with conflicting labels,59

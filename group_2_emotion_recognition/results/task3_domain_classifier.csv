@@ -1,0 +1,6 @@
+feature,domain_clf_acc
+HOG,0.9949
+LM,0.942
+PCA,0.9885
+GEO,0.7953
+HOG+LM,0.9975

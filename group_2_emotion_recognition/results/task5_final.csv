@@ -1,0 +1,3 @@
+group,option,split,n_train,dims,acc,bal_acc,macro_f1,n
+final,final (full train),val,28709,1363,0.5935,0.5657,0.5857,3589
+final,final (full train),test,28709,1363,0.5954,0.5717,0.5917,3589

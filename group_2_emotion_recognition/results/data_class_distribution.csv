@@ -1,0 +1,8 @@
+,FER train,FER val (PublicTest),FER test (PrivateTest),KDEF train,KDEF test
+Angry,3995,467,491,112,28
+Disgust,436,56,55,112,28
+Fear,4097,496,528,112,28
+Happy,7215,895,879,112,28
+Sad,4830,653,594,112,28
+Surprise,3171,415,416,112,28
+Neutral,4965,607,626,112,28

@@ -1,0 +1,13 @@
+\begin{tabular}{lllrrrr}
+\toprule
+                                &             &                          &   acc &  bal\_acc &  macro\_f1 &     n \\
+model & features & test &       &          &           &       \\
+\midrule
+Fuzzy TS (first, 2 rules/class) & 6 geometric & KDEF test & 0.638 &    0.638 &     0.632 &   196 \\
+LR & 6 geometric & KDEF test & 0.638 &    0.638 &     0.626 &   196 \\
+SVM (RBF) & 6 geometric & KDEF test & 0.587 &    0.587 &     0.577 &   196 \\
+LR & all 20 geometric & KDEF test & 0.684 &    0.684 &     0.669 &   196 \\
+LR (Task 2 best) & HOG+LM & KDEF test & 0.638 &    0.638 &     0.637 &   196 \\
+Fuzzy TS (first, 2 rules/class) & 6 geometric & FER test (cross-dataset) & 0.317 &    0.304 &     0.289 &  3589 \\
+\bottomrule
+\end{tabular}

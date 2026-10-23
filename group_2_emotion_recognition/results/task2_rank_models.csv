@@ -1,0 +1,4 @@
+model,FER rank (models),KDEF rank (models),FER mean F1,KDEF mean F1
+LR,3,1,0.366675,0.649675
+SVM,1,2,0.519575,0.620375
+RF,2,3,0.4662,0.6107250000000001

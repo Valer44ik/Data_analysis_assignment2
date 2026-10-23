@@ -1,0 +1,9 @@
+true,predicted,count
+Neutral,Sad,108
+Sad,Neutral,100
+Fear,Sad,90
+Angry,Sad,85
+Sad,Happy,74
+Angry,Neutral,71
+Sad,Angry,70
+Sad,Fear,68
