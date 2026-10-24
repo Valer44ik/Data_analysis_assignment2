@@ -20,7 +20,8 @@ The GPU kernel computation (Task~1) makes one full-data SVM fit take about a min
 \item \emph{Class balancing}: none vs inverse-frequency class weights vs SMOTE (inside an
   \texttt{imblearn} pipeline so that synthetic samples never leak into validation).
 \item \emph{Data augmentation}: horizontal flips, and flips + random rotations ($\pm10^\circ$) of
-  the training images.
+  the training images. Augmented copies are \emph{added} to all real images, up to the 33k-image
+  limit of the GPU kernel matrix, so augmentation never replaces real data.
 \item \emph{KDEF-derived geometric features}: 20 scale-invariant geometric measures ranked on KDEF
   by mutual information with the emotion \emph{and} by transfer consistency (Spearman correlation
   between per-emotion means on KDEF and on FER). Only features that are informative on clean data
@@ -57,6 +58,20 @@ The GPU kernel computation (Task~1) makes one full-data SVM fit take about a min
 and \todo{} for the provided baseline (Table~\ref{tab:t5cmp}). \todo{Per-class: which classes
 improved (Disgust with balancing/merging, ...).} Merging KDEF \todo{helps/does not help} FER but
 makes the model work on both domains (KDEF test \todo{}).
+
+\textbf{Why mirrored faces do not help.} Test-time augmentation lowers macro-F1 instead of
+raising it (\todo{} vs \todo{}), and flipping adds little. A controlled experiment on
+equal-size training subsets (\texttt{results/task5\_mirror\_macro\_f1.csv}) shows why: a model
+loses \todo{x} points when training and test faces have opposite orientation
+(original$\to$mirrored or mirrored$\to$original), while mirrored$\to$mirrored scores the same as
+original$\to$original. The loss remains (\todo{x} points) on validation images that have no exact
+copy in Training. FER2013 therefore has no left/right bias: the RBF-SVM partly recognises a test
+face by its similarity to near-identical training photos (same person, photo series or crop) that
+an exact hash does not catch, and a mirrored face no longer matches them. Flipping helps when it
+adds views of the same real images (\todo{} vs \todo{}), but less than the same number of new
+real images (\todo{}). Together with the duplicate analysis of Task~1 (0.92 vs 0.52 macro-F1),
+this shows that part of FER2013's test score comes from near-duplicates shared across splits,
+so the honest generalisation estimate is lower than the headline number.
 
 \begin{table}[h]\centering\small
 \caption{Final comparison on FER2013 PrivateTest. Last year's number is on a landmark-filtered test set.}
