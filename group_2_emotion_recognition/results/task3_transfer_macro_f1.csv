@@ -1,4 +1,4 @@
 train,FER test,KDEF test
 FER,0.4263,0.3857
-KDEF,0.1687,0.637
-KDEF (all 980),0.1879,
+KDEF,0.177,0.623
+KDEF (all 980),0.1958,

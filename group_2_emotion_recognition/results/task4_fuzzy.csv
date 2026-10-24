@@ -3,5 +3,5 @@ model,features,test,acc,bal_acc,macro_f1,n
 LR,6 geometric,KDEF test,0.6378,0.6378,0.6262,196
 SVM (RBF),6 geometric,KDEF test,0.5867,0.5867,0.5765,196
 LR,all 20 geometric,KDEF test,0.6837,0.6837,0.6693,196
-LR (Task 2 best),HOG+LM,KDEF test,0.6378,0.6378,0.637,196
+LR (Task 2 best),HOG+LM,KDEF test,0.6276,0.6276,0.623,196
 "Fuzzy TS (first, 2 rules/class)",6 geometric,FER test (cross-dataset),0.3174,0.3039,0.2893,3589

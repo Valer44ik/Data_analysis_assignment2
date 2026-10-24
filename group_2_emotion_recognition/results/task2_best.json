@@ -2,12 +2,12 @@
   "model": "LR",
   "feature": "HOG+LM",
   "params": {
-    "clf__C": 0.01,
+    "clf__C": 0.003,
     "clf__class_weight": null
   },
   "all_params": {
     "LR|HOG": {
-      "clf__C": 0.01,
+      "clf__C": 0.003,
       "clf__class_weight": null
     },
     "LR|LM": {
@@ -20,25 +20,29 @@
       "pca__n_components": 120
     },
     "LR|HOG+LM": {
-      "clf__C": 0.01,
+      "clf__C": 0.003,
       "clf__class_weight": null
     },
     "SVM|HOG": {
       "clf__C": 3,
-      "clf__class_weight": null
+      "clf__class_weight": null,
+      "clf__gamma_mult": 1.0
     },
     "SVM|LM": {
       "clf__C": 3,
-      "clf__class_weight": null
+      "clf__class_weight": null,
+      "clf__gamma_mult": 0.5
     },
     "SVM|PCA": {
-      "clf__C": 3,
+      "clf__C": 1,
       "clf__class_weight": null,
-      "pca__n_components": 60
+      "clf__gamma_mult": 0.5,
+      "pca__n_components": 120
     },
     "SVM|HOG+LM": {
       "clf__C": 3,
-      "clf__class_weight": null
+      "clf__class_weight": null,
+      "clf__gamma_mult": 0.5
     },
     "RF|HOG": {
       "clf__class_weight": "balanced_subsample",
@@ -48,7 +52,7 @@
     "RF|LM": {
       "clf__class_weight": "balanced_subsample",
       "clf__max_depth": null,
-      "clf__min_samples_leaf": 1
+      "clf__min_samples_leaf": 8
     },
     "RF|PCA": {
       "clf__class_weight": null,

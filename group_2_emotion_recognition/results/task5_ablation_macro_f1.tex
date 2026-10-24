@@ -3,47 +3,63 @@
  &  & macro-F1 val & macro-F1 test & macro-F1 kdef_test \\
 group & option &  &  &  \\
 \midrule
-base & Task 1 best (SVM/HOG+LM) & 0.509 & 0.515 & -- \\
+base & Task 1 best (SVM/HOG+LM) & 0.587 & 0.584 & -- \\
 \cline{1-5}
-\multirow[t]{2}{*}{A0} & gray & 0.509 & 0.515 & -- \\
- & CLAHE & 0.502 & 0.503 & -- \\
+\multirow[t]{2}{*}{A0} & gray & 0.587 & 0.584 & -- \\
+ & CLAHE & 0.581 & 0.579 & -- \\
 \cline{1-5}
-\multirow[t]{4}{*}{A1} & HOG o9 c8 & 0.509 & 0.515 & -- \\
- & HOG o9 c6 & 0.495 & 0.505 & -- \\
- & HOG o12 c8 & 0.520 & 0.512 & -- \\
- & HOG o12 c6 & 0.486 & 0.500 & -- \\
+\multirow[t]{4}{*}{A1} & HOG o9 c8 & 0.587 & 0.584 & -- \\
+ & HOG o9 c6 & 0.578 & 0.573 & -- \\
+ & HOG o12 c8 & 0.586 & 0.587 & -- \\
+ & HOG o12 c6 & 0.571 & 0.569 & -- \\
 \cline{1-5}
-\multirow[t]{3}{*}{A2} & no balancing & 0.520 & 0.512 & -- \\
- & class weights & 0.522 & 0.515 & -- \\
- & SMOTE & 0.518 & 0.517 & -- \\
+\multirow[t]{3}{*}{A2} & no balancing & 0.587 & 0.584 & -- \\
+ & class weights & 0.586 & 0.586 & -- \\
+ & SMOTE & 0.539 & 0.552 & -- \\
 \cline{1-5}
-\multirow[t]{3}{*}{A3} & no augmentation & 0.522 & 0.515 & -- \\
- & flip & 0.518 & 0.528 & -- \\
- & flip + rotation & 0.523 & 0.527 & -- \\
+\multirow[t]{3}{*}{A3} & no augmentation & 0.587 & 0.584 & -- \\
+ & flip & 0.542 & 0.552 & -- \\
+ & flip + rotation & 0.552 & 0.546 & -- \\
 \cline{1-5}
-\multirow[t]{3}{*}{B} & no geometric & 0.522 & 0.515 & -- \\
- & + all 20 geometric & 0.525 & 0.520 & -- \\
- & + 10 KDEF-selected geometric & 0.523 & 0.521 & -- \\
+\multirow[t]{3}{*}{B} & no geometric & 0.587 & 0.584 & -- \\
+ & + all 20 geometric & 0.594 & 0.590 & -- \\
+ & + 10 KDEF-selected geometric & 0.590 & 0.590 & -- \\
 \cline{1-5}
-\multirow[t]{2}{*}{C1} & no prototypes & 0.525 & 0.520 & -- \\
- & + prototype distances & 0.528 & 0.519 & -- \\
+\multirow[t]{2}{*}{C1} & no prototypes & 0.594 & 0.590 & -- \\
+ & + prototype distances & 0.594 & 0.592 & -- \\
 \cline{1-5}
-\multirow[t]{3}{*}{C2} & no curation & 0.528 & 0.519 & -- \\
- & dedup + blanks & 0.516 & 0.508 & -- \\
- & dedup + blanks + flagged labels & 0.508 & 0.509 & -- \\
+\multirow[t]{3}{*}{C2} & no curation & 0.594 & 0.590 & -- \\
+ & dedup + blanks & 0.589 & 0.588 & -- \\
+ & dedup + blanks + flagged labels & 0.577 & 0.577 & -- \\
 \cline{1-5}
-\multirow[t]{3}{*}{D} & FER only & 0.528 & 0.519 & 0.302 \\
- & + KDEF (clean) & 0.521 & 0.521 & 0.666 \\
- & + KDEF (degraded to FER-like) & 0.522 & 0.522 & 0.627 \\
+\multirow[t]{3}{*}{D} & FER only & 0.594 & 0.590 & 0.355 \\
+ & + KDEF (clean) & 0.593 & 0.588 & 0.652 \\
+ & + KDEF (degraded to FER-like) & 0.593 & 0.589 & 0.599 \\
 \cline{1-5}
-\multirow[t]{3}{*}{A4} & no selection & 0.528 & 0.519 & -- \\
- & SelectKBest (50 %) & 0.509 & 0.525 & -- \\
- & PCA (95 % var.) & 0.526 & 0.523 & -- \\
+\multirow[t]{2}{*}{E1} & no LBP & 0.594 & 0.590 & -- \\
+ & + LBP texture & 0.590 & 0.594 & -- \\
 \cline{1-5}
-\multirow[t]{4}{*}{A5} & C=1.5 & 0.524 & 0.520 & -- \\
- & C=3 & 0.528 & 0.519 & -- \\
- & C=6 & 0.525 & 0.522 & -- \\
- & C=12 & 0.526 & 0.521 & -- \\
+\multirow[t]{3}{*}{A4} & no selection & 0.594 & 0.590 & -- \\
+ & SelectKBest (50 %) & 0.573 & 0.580 & -- \\
+ & PCA (95 % var.) & 0.591 & 0.594 & -- \\
+\cline{1-5}
+\multirow[t]{9}{*}{A5} & C=1.5, gamma x0.67 & 0.530 & 0.506 & -- \\
+ & C=1.5, gamma x1 & 0.567 & 0.558 & -- \\
+ & C=1.5, gamma x1.5 & 0.585 & 0.585 & -- \\
+ & C=3, gamma x0.67 & 0.578 & 0.567 & -- \\
+ & C=3, gamma x1 & 0.594 & 0.590 & -- \\
+ & C=3, gamma x1.5 & 0.598 & 0.594 & -- \\
+ & C=6, gamma x0.67 & 0.585 & 0.584 & -- \\
+ & C=6, gamma x1 & 0.593 & 0.594 & -- \\
+ & C=6, gamma x1.5 & 0.598 & 0.594 & -- \\
+\cline{1-5}
+\multirow[t]{2}{*}{E2} & single view & 0.598 & 0.594 & -- \\
+ & + mirrored view (TTA) & 0.492 & 0.467 & -- \\
+\cline{1-5}
+\multirow[t]{4}{*}{E3} & member: selected config & 0.598 & 0.594 & -- \\
+ & member: LBP+LM & 0.527 & 0.520 & -- \\
+ & member: PCA pixels & 0.483 & 0.508 & -- \\
+ & ensemble selected config x1, LBP+LM x0, PCA pixels x0 & 0.598 & 0.594 & -- \\
 \cline{1-5}
 \bottomrule
 \end{tabular}

@@ -1,9 +1,10 @@
 adaptation,FER→KDEF,KDEF→FER
-baseline,0.2945,0.1687
-crop margin 0.0,0.3703,0.2254
-eye alignment,0.305,0.1654
-KDEF degradation,0.2636,0.2095
-intensity normalization,0.3373,0.1386
-per-domain standardization,0.376,0.2273
-CORAL,0.3037,0.2588
-all combined,0.3336,0.2722
+baseline,0.2945,0.177
+crop margin 0.0,0.3703,0.2249
+eye alignment,0.305,0.1732
+KDEF degradation,0.2636,0.1992
+intensity normalization,0.3373,0.1461
+per-domain standardization,0.376,0.2326
+CORAL,0.3037,0.2657
+label-shift correction (EM),0.1659,0.1267
+all combined,0.376,0.273

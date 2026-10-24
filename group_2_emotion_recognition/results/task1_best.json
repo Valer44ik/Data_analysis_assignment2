@@ -3,7 +3,8 @@
   "feature": "HOG+LM",
   "params": {
     "clf__C": 3,
-    "clf__class_weight": null
+    "clf__class_weight": null,
+    "clf__gamma_mult": 1.0
   },
   "best_feature_per_model": {
     "LR": "HOG+LM",
@@ -13,7 +14,7 @@
   "best_feature_overall": "HOG+LM",
   "all_params": {
     "LR|HOG": {
-      "clf__C": 0.1,
+      "clf__C": 0.03,
       "clf__class_weight": null
     },
     "LR|LM": {
@@ -21,7 +22,7 @@
       "clf__class_weight": null
     },
     "LR|PCA": {
-      "clf__C": 0.1,
+      "clf__C": 0.03,
       "clf__class_weight": null,
       "pca__n_components": 120
     },
@@ -31,25 +32,29 @@
     },
     "SVM|HOG": {
       "clf__C": 10,
-      "clf__class_weight": "balanced"
+      "clf__class_weight": "balanced",
+      "clf__gamma_mult": 1.0
     },
     "SVM|LM": {
       "clf__C": 10,
-      "clf__class_weight": null
+      "clf__class_weight": null,
+      "clf__gamma_mult": 2.0
     },
     "SVM|PCA": {
       "clf__C": 3,
       "clf__class_weight": "balanced",
+      "clf__gamma_mult": 1.0,
       "pca__n_components": 120
     },
     "SVM|HOG+LM": {
       "clf__C": 3,
-      "clf__class_weight": null
+      "clf__class_weight": null,
+      "clf__gamma_mult": 1.0
     },
     "RF|HOG": {
       "clf__class_weight": "balanced_subsample",
-      "clf__max_depth": 25,
-      "clf__min_samples_leaf": 3
+      "clf__max_depth": null,
+      "clf__min_samples_leaf": 8
     },
     "RF|LM": {
       "clf__class_weight": "balanced_subsample",
@@ -58,14 +63,14 @@
     },
     "RF|PCA": {
       "clf__class_weight": "balanced_subsample",
-      "clf__max_depth": null,
-      "clf__min_samples_leaf": 3,
+      "clf__max_depth": 25,
+      "clf__min_samples_leaf": 8,
       "pca__n_components": 60
     },
     "RF|HOG+LM": {
       "clf__class_weight": "balanced_subsample",
       "clf__max_depth": 25,
-      "clf__min_samples_leaf": 3
+      "clf__min_samples_leaf": 8
     }
   }
 }

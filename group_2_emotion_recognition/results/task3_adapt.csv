@@ -1,17 +1,19 @@
 adaptation,direction,acc,bal_acc,macro_f1,n
-baseline,KDEF→FER,0.2093,0.2047,0.1687,3589
+baseline,KDEF→FER,0.2182,0.2172,0.177,3589
 baseline,FER→KDEF,0.3622,0.3622,0.2945,196
-crop margin 0.0,KDEF→FER,0.2363,0.2754,0.2254,3589
+crop margin 0.0,KDEF→FER,0.2371,0.2716,0.2249,3589
 crop margin 0.0,FER→KDEF,0.4439,0.4439,0.3703,196
-eye alignment,KDEF→FER,0.204,0.2031,0.1654,3589
+eye alignment,KDEF→FER,0.2134,0.2149,0.1732,3589
 eye alignment,FER→KDEF,0.3827,0.3827,0.305,196
-KDEF degradation,KDEF→FER,0.2449,0.2511,0.2095,3589
+KDEF degradation,KDEF→FER,0.2379,0.2409,0.1992,3589
 KDEF degradation,FER→KDEF,0.3418,0.3418,0.2636,196
-intensity normalization,KDEF→FER,0.2095,0.1903,0.1386,3589
+intensity normalization,KDEF→FER,0.2162,0.1965,0.1461,3589
 intensity normalization,FER→KDEF,0.398,0.398,0.3373,196
-per-domain standardization,KDEF→FER,0.2416,0.2267,0.2273,3589
+per-domain standardization,KDEF→FER,0.246,0.233,0.2326,3589
 per-domain standardization,FER→KDEF,0.4235,0.4235,0.376,196
-CORAL,KDEF→FER,0.2856,0.2669,0.2588,3589
+CORAL,KDEF→FER,0.2956,0.2791,0.2657,3589
 CORAL,FER→KDEF,0.3469,0.3469,0.3037,196
-all combined,KDEF→FER,0.292,0.2934,0.2722,3589
-all combined,FER→KDEF,0.3878,0.3878,0.3336,196
+label-shift correction (EM),KDEF→FER,0.1998,0.1974,0.1267,3589
+label-shift correction (EM),FER→KDEF,0.2653,0.2653,0.1659,196
+all combined,KDEF→FER,0.2903,0.2848,0.273,3589
+all combined,FER→KDEF,0.4184,0.4184,0.376,196
