@@ -1,0 +1,5 @@
+train,all / original,no copy in train / original,all / mirrored,no copy in train / mirrored
+n original,0.513,0.4557,0.4486,0.4285
+n mirrored,0.4441,0.4204,0.5156,0.4562
+n original + their n mirrors,0.5268,0.4734,0.5209,0.4622
+2n original,0.5801,0.5253,0.4625,0.4385

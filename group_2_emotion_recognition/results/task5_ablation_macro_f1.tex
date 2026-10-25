@@ -18,48 +18,48 @@ base & Task 1 best (SVM/HOG+LM) & 0.587 & 0.584 & -- \\
  & SMOTE & 0.539 & 0.552 & -- \\
 \cline{1-5}
 \multirow[t]{3}{*}{A3} & no augmentation & 0.587 & 0.584 & -- \\
- & flip & 0.542 & 0.552 & -- \\
- & flip + rotation & 0.552 & 0.546 & -- \\
+ & flip & 0.590 & 0.585 & -- \\
+ & flip + rotation & 0.591 & 0.592 & -- \\
 \cline{1-5}
-\multirow[t]{3}{*}{B} & no geometric & 0.587 & 0.584 & -- \\
- & + all 20 geometric & 0.594 & 0.590 & -- \\
- & + 10 KDEF-selected geometric & 0.590 & 0.590 & -- \\
+\multirow[t]{3}{*}{B} & no geometric & 0.591 & 0.592 & -- \\
+ & + all 20 geometric & 0.601 & 0.594 & -- \\
+ & + 10 KDEF-selected geometric & 0.599 & 0.592 & -- \\
 \cline{1-5}
-\multirow[t]{2}{*}{C1} & no prototypes & 0.594 & 0.590 & -- \\
- & + prototype distances & 0.594 & 0.592 & -- \\
+\multirow[t]{2}{*}{C1} & no prototypes & 0.601 & 0.594 & -- \\
+ & + prototype distances & 0.599 & 0.592 & -- \\
 \cline{1-5}
-\multirow[t]{3}{*}{C2} & no curation & 0.594 & 0.590 & -- \\
- & dedup + blanks & 0.589 & 0.588 & -- \\
- & dedup + blanks + flagged labels & 0.577 & 0.577 & -- \\
+\multirow[t]{3}{*}{C2} & no curation & 0.601 & 0.594 & -- \\
+ & dedup + blanks & 0.593 & 0.587 & -- \\
+ & dedup + blanks + flagged labels & 0.578 & 0.578 & -- \\
 \cline{1-5}
-\multirow[t]{3}{*}{D} & FER only & 0.594 & 0.590 & 0.355 \\
- & + KDEF (clean) & 0.593 & 0.588 & 0.652 \\
- & + KDEF (degraded to FER-like) & 0.593 & 0.589 & 0.599 \\
+\multirow[t]{3}{*}{D} & FER only & 0.601 & 0.594 & 0.324 \\
+ & + KDEF (clean) & 0.597 & 0.591 & 0.640 \\
+ & + KDEF (degraded to FER-like) & 0.595 & 0.594 & 0.590 \\
 \cline{1-5}
-\multirow[t]{2}{*}{E1} & no LBP & 0.594 & 0.590 & -- \\
- & + LBP texture & 0.590 & 0.594 & -- \\
+\multirow[t]{2}{*}{E1} & no LBP & 0.601 & 0.594 & -- \\
+ & + LBP texture & 0.591 & 0.604 & -- \\
 \cline{1-5}
-\multirow[t]{3}{*}{A4} & no selection & 0.594 & 0.590 & -- \\
- & SelectKBest (50 %) & 0.573 & 0.580 & -- \\
- & PCA (95 % var.) & 0.591 & 0.594 & -- \\
+\multirow[t]{3}{*}{A4} & no selection & 0.601 & 0.594 & -- \\
+ & SelectKBest (50 %) & 0.585 & 0.569 & -- \\
+ & PCA (95 % var.) & 0.591 & 0.593 & -- \\
 \cline{1-5}
-\multirow[t]{9}{*}{A5} & C=1.5, gamma x0.67 & 0.530 & 0.506 & -- \\
- & C=1.5, gamma x1 & 0.567 & 0.558 & -- \\
- & C=1.5, gamma x1.5 & 0.585 & 0.585 & -- \\
- & C=3, gamma x0.67 & 0.578 & 0.567 & -- \\
- & C=3, gamma x1 & 0.594 & 0.590 & -- \\
- & C=3, gamma x1.5 & 0.598 & 0.594 & -- \\
- & C=6, gamma x0.67 & 0.585 & 0.584 & -- \\
- & C=6, gamma x1 & 0.593 & 0.594 & -- \\
- & C=6, gamma x1.5 & 0.598 & 0.594 & -- \\
+\multirow[t]{9}{*}{A5} & C=1.5, gamma x0.67 & 0.532 & 0.514 & -- \\
+ & C=1.5, gamma x1 & 0.566 & 0.554 & -- \\
+ & C=1.5, gamma x1.5 & 0.584 & 0.582 & -- \\
+ & C=3, gamma x0.67 & 0.583 & 0.565 & -- \\
+ & C=3, gamma x1 & 0.601 & 0.594 & -- \\
+ & C=3, gamma x1.5 & 0.597 & 0.601 & -- \\
+ & C=6, gamma x0.67 & 0.590 & 0.584 & -- \\
+ & C=6, gamma x1 & 0.602 & 0.601 & -- \\
+ & C=6, gamma x1.5 & 0.599 & 0.600 & -- \\
 \cline{1-5}
-\multirow[t]{2}{*}{E2} & single view & 0.598 & 0.594 & -- \\
- & + mirrored view (TTA) & 0.492 & 0.467 & -- \\
+\multirow[t]{2}{*}{E2} & single view & 0.601 & 0.594 & -- \\
+ & + mirrored view (TTA) & 0.517 & 0.484 & -- \\
 \cline{1-5}
-\multirow[t]{4}{*}{E3} & member: selected config & 0.598 & 0.594 & -- \\
- & member: LBP+LM & 0.527 & 0.520 & -- \\
- & member: PCA pixels & 0.483 & 0.508 & -- \\
- & ensemble selected config x1, LBP+LM x0, PCA pixels x0 & 0.598 & 0.594 & -- \\
+\multirow[t]{4}{*}{E3} & member: selected config & 0.601 & 0.594 & -- \\
+ & member: LBP+LM & 0.516 & 0.531 & -- \\
+ & member: PCA pixels & 0.483 & 0.510 & -- \\
+ & ensemble selected config x1, LBP+LM x0, PCA pixels x0 & 0.601 & 0.594 & -- \\
 \cline{1-5}
 \bottomrule
 \end{tabular}

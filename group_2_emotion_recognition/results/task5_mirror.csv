@@ -1,0 +1,17 @@
+train,test_view,val_subset,acc,bal_acc,macro_f1,n
+n original,original,all,0.5414,0.4898,0.513,3589
+n original,original,no copy in train,0.5173,0.4407,0.4557,3290
+n original,mirrored,all,0.5088,0.4357,0.4486,3589
+n original,mirrored,no copy in train,0.5036,0.4194,0.4285,3290
+n mirrored,original,all,0.504,0.4302,0.4441,3589
+n mirrored,original,no copy in train,0.496,0.4102,0.4204,3290
+n mirrored,mirrored,all,0.5389,0.4904,0.5156,3589
+n mirrored,mirrored,no copy in train,0.5143,0.4382,0.4562,3290
+n original + their n mirrors,original,all,0.5536,0.5049,0.5268,3589
+n original + their n mirrors,original,no copy in train,0.5301,0.4572,0.4734,3290
+n original + their n mirrors,mirrored,all,0.5483,0.4992,0.5209,3589
+n original + their n mirrors,mirrored,no copy in train,0.5249,0.4477,0.4622,3290
+2n original,original,all,0.5887,0.5573,0.5801,3589
+2n original,original,no copy in train,0.5568,0.5029,0.5253,3290
+2n original,mirrored,all,0.5244,0.4492,0.4625,3589
+2n original,mirrored,no copy in train,0.5161,0.4287,0.4385,3290
