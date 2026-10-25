@@ -25,6 +25,116 @@ ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
 from src import features as F  # noqa: E402
 
+# ---- GPUKernelSVC (inlined from the former src/gpu_svm.py) ----
+import os
+
+import numpy as np
+from sklearn.base import BaseEstimator, ClassifierMixin
+from sklearn.svm import SVC
+
+MAX_KERNEL_N = int(os.environ.get("MAX_KERNEL_N", 33000))
+
+
+def _torch():
+    try:
+        import torch
+        return torch
+    except ImportError:
+        return None
+
+
+def device():
+    t = _torch()
+    if t is None:
+        return "numpy"
+    return "cuda" if t.cuda.is_available() else "cpu"
+
+
+def rbf_kernel(A, B, gamma, block=2048):
+    """exp(-gamma * ||a - b||^2) for all rows of A and B, as a float64 NumPy array."""
+    A = np.asarray(A, np.float32)
+    B = np.asarray(B, np.float32)
+    out = np.empty((len(A), len(B)), np.float64)
+    t = _torch()
+    if t is None:
+        bn = (B.astype(np.float64) ** 2).sum(1)
+        for i in range(0, len(A), block):
+            a = A[i:i + block].astype(np.float64)
+            d = (a ** 2).sum(1)[:, None] + bn[None, :] - 2 * a @ B.T.astype(np.float64)
+            out[i:i + block] = np.exp(-gamma * np.maximum(d, 0))
+        return out
+    dev = device()
+    with t.no_grad():
+        Bt = t.as_tensor(B, device=dev)
+        bn = (Bt * Bt).sum(1)
+        for i in range(0, len(A), block):
+            At = t.as_tensor(A[i:i + block], device=dev)
+            d = (At * At).sum(1)[:, None] + bn[None, :] - 2 * (At @ Bt.T)
+            out[i:i + block] = t.exp(-gamma * d.clamp_min_(0)).double().cpu().numpy()
+    return out
+
+
+class GPUKernelSVC(ClassifierMixin, BaseEstimator):
+    """Drop-in replacement for SVC(kernel="rbf") with the kernel computed on the GPU.
+
+    gamma_mult multiplies gamma (useful to tune gamma relative to the data-dependent "scale" value).
+    """
+
+    def __init__(self, C=1.0, gamma="scale", gamma_mult=1.0, class_weight=None, max_kernel_n=MAX_KERNEL_N,
+                 cache_size=2000, random_state=None):
+        self.C = C
+        self.gamma = gamma
+        self.gamma_mult = gamma_mult
+        self.class_weight = class_weight
+        self.max_kernel_n = max_kernel_n
+        self.cache_size = cache_size
+        self.random_state = random_state
+
+    def fit(self, X, y, sample_weight=None):
+        X = np.asarray(X, np.float32)
+        # same definition as scikit-learn's gamma="scale"
+        base = 1.0 / (X.shape[1] * X.var()) if self.gamma == "scale" else float(self.gamma)
+        self.gamma_ = base * self.gamma_mult
+        self.precomputed_ = len(X) <= self.max_kernel_n
+        if self.precomputed_:
+            K = rbf_kernel(X, X, self.gamma_)
+            self.svc_ = SVC(C=self.C, kernel="precomputed", class_weight=self.class_weight,
+                            cache_size=self.cache_size, random_state=self.random_state)
+            self.svc_.fit(K, y, sample_weight=sample_weight)
+            del K
+            self.support_vectors_ = X[self.svc_.support_]
+            self.n_train_ = len(X)
+        else:
+            self.svc_ = SVC(C=self.C, kernel="rbf", gamma=self.gamma_, class_weight=self.class_weight,
+                            cache_size=self.cache_size, random_state=self.random_state)
+            self.svc_.fit(X, y, sample_weight=sample_weight)
+        self.classes_ = self.svc_.classes_
+        self.n_features_in_ = X.shape[1]
+        return self
+
+    def _apply(self, method, X, block=1024):
+        X = np.asarray(X, np.float32)
+        if not self.precomputed_:
+            return getattr(self.svc_, method)(X)
+        out = []
+        for i in range(0, len(X), block):
+            Ksv = rbf_kernel(X[i:i + block], self.support_vectors_, self.gamma_)
+            K = np.zeros((len(Ksv), self.n_train_))   # libsvm only reads the support-vector columns
+            K[:, self.svc_.support_] = Ksv
+            out.append(getattr(self.svc_, method)(K))
+        return np.concatenate(out)
+
+    def predict(self, X):
+        return self._apply("predict", X)
+
+    def decision_function(self, X):
+        return self._apply("decision_function", X)
+# ---- end of GPUKernelSVC ----
+
+# The saved .pkl models refer to src.gpu_svm.GPUKernelSVC; point that name to this file
+# so they still load after src/gpu_svm.py was removed.
+sys.modules["src.gpu_svm"] = sys.modules[__name__]
+
 DEFAULT_MODELS = ["models/final.pkl", "models/task1_SVM.pkl", "models/task1_LR.pkl", "models/task1_RF.pkl"]
 COLORS = [(40, 40, 220), (40, 160, 40), (160, 40, 160), (0, 210, 255), (200, 120, 40), (255, 200, 0), (180, 180, 180)]
 

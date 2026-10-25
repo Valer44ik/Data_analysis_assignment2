@@ -141,7 +141,7 @@ def rotate_to_horizontal_eyes(img, pts):
 # KDEF -> FER format
 # ----------------------------------------------------------------------------------------
 def preprocess_kdef_image(path, margin=0.20, size=IMG_SIZE, color="gray", align=False):
-    """Extended version of the kit's preprocess_kdef_image (src/preprocess.py).
+    """Extended version of the kit's preprocess_kdef_image (now inlined in z_load_kdef_student.ipynb).
 
     1. Haar face detection (largest face)  2. optional eye-line alignment (dlib)
     3. expand the box by `margin` on every side  4. crop  5. gray (or keep RGB)

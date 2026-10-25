@@ -16,8 +16,7 @@ Course 5ARE0, Assignment 2 (2026). Gabriele Salvo, Valērijs Gončarovs, Herman 
 | `04_fuzzy_kdef.ipynb` | **Task 4** — pyFUME Takagi–Sugeno fuzzy classifier on 6 geometric features (**fuzzy environment**) |
 | `05_creative_challenge.ipynb` | **Task 5** — tuning, balancing, augmentation, KDEF geometric features & prototypes, label curation, FER+KDEF merge |
 | `src/features.py` | preprocessing and feature extraction (the assignment allows feature extraction outside notebooks) |
-| `src/gpu_svm.py` | `GPUKernelSVC`: RBF-SVM whose kernel matrix is computed with PyTorch on the GPU (CUDA); same libsvm solver and identical predictions as `SVC`, ~30x faster. In `src/` only so the pickled models load in the demo |
-| `src/preprocess.py`, `src/utils_display.py` | unchanged kit helpers used by the kit notebooks |
+| `GPUKernelSVC` (in notebooks 01, 02, 03, 05 and `demo_emotion.py`) | RBF-SVM whose kernel matrix is computed with PyTorch on the GPU (CUDA); same libsvm solver and identical predictions as `SVC`, ~30x faster. The demo maps the old name `src.gpu_svm` to its own copy so the saved models load |
 | `models/*.pkl` | fitted models; each `.pkl` is a dict `{model, spec, labels, ...}` where `spec` describes the features |
 | `results/*.csv`, `results/*.tex` | every metric of every experiment (the report tables are generated from these) |
 | `figures/*.png` | figures used in the report and appendix |

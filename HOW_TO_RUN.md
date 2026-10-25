@@ -94,7 +94,7 @@ with these kernels.
 ### GPU (CUDA) for the SVMs — main environment only
 
 The RBF-SVMs compute their kernel matrix with PyTorch, on the GPU when CUDA is available
-(`src/gpu_svm.py`: same model and identical predictions as scikit-learn's SVC, much faster).
+(`GPUKernelSVC`, defined in the notebooks: same model and identical predictions as scikit-learn's SVC, much faster).
 Install the **CUDA build** of PyTorch into the main environment:
 
 ```powershell
